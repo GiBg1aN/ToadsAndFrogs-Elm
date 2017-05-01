@@ -1,12 +1,11 @@
 module ToadsAndFrogs exposing (..)
 
-import Html exposing (..)
+import Html exposing (button,div,text,h1,h3,beginnerProgram,Html)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (..)
 
 main : Program Never Model Msg
 main = Html.beginnerProgram { model = model, view = view, update = update }
-
 
 -- MODEL
 
@@ -48,14 +47,13 @@ getOp o =
     case o of
         Toad -> (-)
         Frog -> (+)
-        Empty -> Debug.log "ATTENZIONE: "(*)
+        Empty -> Debug.log "Warning!: "(*)
 
 move : Board -> Position -> Board
 move field pos =
     if pos >= List.length field || pos < 0 then field
     else
         let elem = field |> getAt pos in
-
         let getNewField op x = 
             if isPosFree field (op pos 1) then 
                 field |> (updateField (op pos 1) x >> updateField pos Empty)
@@ -71,11 +69,12 @@ getAt i l =
     let t = (l |> (List.drop i >> List.head)) in
     case t of
         Just j -> j
-        Nothing -> Debug.crash "Head Error"
+        Nothing -> Debug.crash "getAt Error"
 
 -- UPDATE
 
 type Msg = Reset | Move Position
+
 
 update : Msg -> Model -> Model
 update msg model =
@@ -87,31 +86,24 @@ update msg model =
         if temp_board == end_state then { model | board = temp_board, status = Win }
         else { model | board = temp_board, status = Playing }
 
-
 -- VIEW
 
 renderCell : Position -> Board -> Html Msg
 renderCell i l =
     let c = getAt i l in
     case c of
-        Empty -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "white"), ("border", "1px solid black"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
-        Toad -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "red"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
+        Empty -> div [ onClick (Move i), style [("padding", "30px"),("width", "50px"), ("height", "50px"), ("background-color", "white"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
+        Toad -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "orange"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
         Frog -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "green"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
 
 view : Model -> Html Msg
 view model =
     let
-        status_message =
-            (case model.status of
-                Playing -> "Playing"
-                
-                Win -> "You Won")
         cells =  List.map (\x -> renderCell x model.board) (List.range 0 6)
         
-        board = div [ style [("display", "flex")]] cells
+        board = if model.status /= Win then div [ style [("display", "flex"),("padding","25px")]] cells
+                else div [ style [("display","flex"),("padding","20px")]] [ h1 [] [ text "You Won!" ] ]
 
         reset = div [] [ button [ onClick Reset, class "btn" ] [ text "Reset" ]]
     in
-    div [] [ div [] [ h3 [ style [("padding-bottom","5px")]] [ text status_message ]] ,board,reset ]
-
-        
+    div [] [ div [] [ h3 [ style [("padding-bottom","5px")]] []] ,board,reset ]

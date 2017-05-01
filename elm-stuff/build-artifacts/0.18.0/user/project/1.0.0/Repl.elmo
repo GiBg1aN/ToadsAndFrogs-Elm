@@ -11,10 +11,10 @@ var _user$project$Repl$getAt = F2(
 			return _elm_lang$core$Native_Utils.crashCase(
 				'Repl',
 				{
-					start: {line: 5, column: 9},
-					end: {line: 7, column: 48}
+					start: {line: 5, column: 5},
+					end: {line: 7, column: 44}
 				},
 				_p1)('Head Error');
 		}
 	});
-var _user$project$Repl$d_e_l_t_r_o_n_3_0_3_0 = _user$project$Repl$getAt;
+var _user$project$Repl$d_e_l_t_r_o_n_3_0_3_0 = A2(_elm_lang$core$List$range, 0, 6);

@@ -1,0 +1,240 @@
+var _user$project$Main$getAt = F2(
+	function (i, l) {
+		var _p1 = function (_p0) {
+			return _elm_lang$core$List$head(
+				A2(_elm_lang$core$List$drop, i + 1, _p0));
+		}(l);
+		if (_p1.ctor === 'Just') {
+			return _p1._0;
+		} else {
+			return _elm_lang$core$Native_Utils.crashCase(
+				'Main',
+				{
+					start: {line: 64, column: 5},
+					end: {line: 66, column: 44}
+				},
+				_p1)('Head Error');
+		}
+	});
+var _user$project$Main$getOp = function (o) {
+	var _p3 = o;
+	switch (_p3.ctor) {
+		case 'Toad':
+			return F2(
+				function (x, y) {
+					return x - y;
+				});
+		case 'Frog':
+			return F2(
+				function (x, y) {
+					return x + y;
+				});
+		default:
+			return F2(
+				function (x, y) {
+					return x * y;
+				});
+	}
+};
+var _user$project$Main$updateField = F3(
+	function (i, x, l) {
+		var _p4 = {ctor: '_Tuple2', _0: l, _1: i};
+		if (_p4._0.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			if (_p4._1 === 0) {
+				return {ctor: '::', _0: x, _1: _p4._0._1};
+			} else {
+				return {
+					ctor: '::',
+					_0: _p4._0._0,
+					_1: A3(_user$project$Main$updateField, i - 1, x, _p4._0._1)
+				};
+			}
+		}
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {board: a, status: b};
+	});
+var _user$project$Main$Frog = {ctor: 'Frog'};
+var _user$project$Main$Toad = {ctor: 'Toad'};
+var _user$project$Main$Empty = {ctor: 'Empty'};
+var _user$project$Main$end_state = {
+	ctor: '::',
+	_0: _user$project$Main$Toad,
+	_1: {
+		ctor: '::',
+		_0: _user$project$Main$Toad,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Main$Toad,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$Empty,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$Frog,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$Frog,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$Frog,
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$Main$isPosFree = F2(
+	function (l, i) {
+		isPosFree:
+		while (true) {
+			var _p5 = {ctor: '_Tuple2', _0: l, _1: i};
+			if (_p5._0.ctor === '[]') {
+				return false;
+			} else {
+				if (_p5._1 === 0) {
+					return _elm_lang$core$Native_Utils.eq(_p5._0._0, _user$project$Main$Empty);
+				} else {
+					var _v4 = _p5._0._1,
+						_v5 = i - 1;
+					l = _v4;
+					i = _v5;
+					continue isPosFree;
+				}
+			}
+		}
+	});
+var _user$project$Main$move = F2(
+	function (field, pos) {
+		if ((_elm_lang$core$Native_Utils.cmp(
+			pos,
+			_elm_lang$core$List$length(field)) > -1) || (_elm_lang$core$Native_Utils.cmp(pos, 0) < 0)) {
+			return field;
+		} else {
+			var elem = A2(_user$project$Main$getAt, pos, field);
+			var getNewField = F2(
+				function (op, x) {
+					return A2(
+						_user$project$Main$isPosFree,
+						field,
+						A2(op, pos, 1)) ? function (_p6) {
+						return A3(
+							_user$project$Main$updateField,
+							pos,
+							_user$project$Main$Empty,
+							A3(
+								_user$project$Main$updateField,
+								A2(op, pos, 1),
+								x,
+								_p6));
+					}(field) : (A2(
+						_user$project$Main$isPosFree,
+						field,
+						A2(op, pos, 2)) ? function (_p7) {
+						return A3(
+							_user$project$Main$updateField,
+							pos,
+							_user$project$Main$Empty,
+							A3(
+								_user$project$Main$updateField,
+								A2(op, pos, 2),
+								x,
+								_p7));
+					}(field) : field);
+				});
+			return _elm_lang$core$Native_Utils.eq(elem, _user$project$Main$Empty) ? field : A2(
+				getNewField,
+				_user$project$Main$getOp(elem),
+				elem);
+		}
+	});
+var _user$project$Main$Win = {ctor: 'Win'};
+var _user$project$Main$Playing = {ctor: 'Playing'};
+var _user$project$Main$model = {
+	board: {
+		ctor: '::',
+		_0: _user$project$Main$Frog,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Main$Frog,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$Frog,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$Empty,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$Toad,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$Toad,
+							_1: {
+								ctor: '::',
+								_0: _user$project$Main$Toad,
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	status: _user$project$Main$Playing
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p8 = msg;
+		if (_p8.ctor === 'Reset') {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					board: {
+						ctor: '::',
+						_0: _user$project$Main$Frog,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$Frog,
+							_1: {
+								ctor: '::',
+								_0: _user$project$Main$Frog,
+								_1: {
+									ctor: '::',
+									_0: _user$project$Main$Empty,
+									_1: {
+										ctor: '::',
+										_0: _user$project$Main$Toad,
+										_1: {
+											ctor: '::',
+											_0: _user$project$Main$Toad,
+											_1: {
+												ctor: '::',
+												_0: _user$project$Main$Toad,
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					status: _user$project$Main$Playing
+				});
+		} else {
+			var temp_board = A2(_user$project$Main$move, model.board, _p8._0);
+			return _elm_lang$core$Native_Utils.eq(temp_board, _user$project$Main$end_state) ? _elm_lang$core$Native_Utils.update(
+				model,
+				{board: temp_board, status: _user$project$Main$Win}) : _elm_lang$core$Native_Utils.update(
+				model,
+				{board: temp_board, status: _user$project$Main$Playing});
+		}
+	});
+var _user$project$Main$Move = function (a) {
+	return {ctor: 'Move', _0: a};
+};
+var _user$project$Main$Reset = {ctor: 'Reset'};

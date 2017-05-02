@@ -29,18 +29,20 @@ end_state = [ Toad,Toad,Toad,Empty,Frog,Frog,Frog ]
 
 
 isPosFree : Board -> Position -> Bool
-isPosFree l i =
-    case (l, i) of
+isPosFree b p =
+    case (b, p) of
         ([], _) -> False
         (x :: xs, 0) -> (x == Empty)
-        (x :: xs, _) -> isPosFree xs (i - 1)
+        (x :: xs, _) -> isPosFree xs (p - 1)
+
 
 updateField : Position -> CellState -> Board -> Board
-updateField i x l =
-    case (l, i) of
+updateField p x b =
+    case (b, p) of
         ([], _) -> []
         (y :: ys, 0) -> x :: ys
-        (y :: ys, _) -> y :: (updateField (i - 1) x ys)
+        (y :: ys, _) -> y :: (updateField (p - 1) x ys)
+
 
 getOp : CellState -> number -> number -> number
 getOp o =
@@ -48,6 +50,7 @@ getOp o =
         Toad -> (-)
         Frog -> (+)
         Empty -> Debug.log "Warning!: "(*)
+
 
 move : Board -> Position -> Board
 move field pos =
@@ -64,9 +67,10 @@ move field pos =
         if elem == Empty then field
         else getNewField (getOp elem) elem
 
+
 getAt : Int -> List a -> a
-getAt i l =
-    let t = (l |> (List.drop i >> List.head)) in
+getAt p b =
+    let t = (b |> (List.drop p >> List.head)) in
     case t of
         Just j -> j
         Nothing -> Debug.crash "getAt Error"
@@ -89,12 +93,13 @@ update msg model =
 -- VIEW
 
 renderCell : Position -> Board -> Html Msg
-renderCell i l =
-    let c = getAt i l in
+renderCell p b =
+    let c = getAt p b in
     case c of
-        Empty -> div [ onClick (Move i), style [("padding", "30px"),("width", "50px"), ("height", "50px"), ("background-color", "white"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
-        Toad -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "orange"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
-        Frog -> div [ onClick (Move i), class "cell", style [("width", "50px"), ("height", "50px"), ("background-color", "green"), ("justify-content", "center"), ("align-items", "center") ,("display", "flex")] ] []
+        Empty -> div [ onClick (Move p),style [("padding", "30px"),("width", "50px"),("height", "50px"),("display", "flex")] ] []
+        Toad -> div [ onClick (Move p),class "cell",style [("width", "50px"),("height", "50px"),("background-color", "orange"),("display", "flex")] ] []
+        Frog -> div [ onClick (Move p),class "cell",style [("width", "50px"),("height", "50px"),("background-color", "green"),("display", "flex")] ] []
+
 
 view : Model -> Html Msg
 view model =
@@ -106,4 +111,4 @@ view model =
 
         reset = div [] [ button [ onClick Reset, class "btn" ] [ text "Reset" ]]
     in
-    div [] [ div [] [ h3 [ style [("padding-bottom","5px")]] []] ,board,reset ]
+    div [] [ div [] [ h3 [ style [("padding-bottom","5px")]] [] ],board,reset ]
